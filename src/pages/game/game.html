@@ -1,0 +1,45 @@
+<ion-content padding>
+
+  <ion-card *ngIf="borrow.length > 0">
+    <ion-card-content>
+      <button *ngFor="let letter of borrow" (click)="fborrow(letter)" ion-button color="dark" outline style="width: 40px; height: 60px;">{{ letter }}</button>
+      <!-- <button *ngFor="let letter of borrow" (click)="addToBoard(letter)" ion-button color="dark" outline style="border-radius:50px 50px 50px 50px;">{{ letter }}</button> -->
+      <ion-note padding-top margin-top float-right text-right>BORROW</ion-note>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="board.length > 0">
+    <ion-card-content>
+      <button *ngFor="let letter of board" (click)="fbin(letter)" ion-button color="secondary" outline style="width: 40px; height: 60px;">{{ letter }}</button>
+      <!-- <button *ngFor="let letter of board" (click)="addToBin(letter)" ion-button color="secondary" outline style="border-radius:50px 50px 50px 50px;">{{ letter }}</button> -->
+      <ion-note padding-top margin-top float-right text-right>BOARD</ion-note>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="bin.length > 0">
+    <ion-card-content>
+      <button *ngFor="let letter of bin" (click)="fboard(letter)" ion-button color="light" outline style="width: 40px; height: 60px;">{{ letter }}</button>
+      <!-- <button *ngFor="let letter of bin" (click)="addToBoard(letter)" ion-button color="light" outline style="border-radius:50px 50px 50px 50px;">{{ letter }}</button> -->
+      <ion-note padding-top margin-top float-right text-right>BIN</ion-note>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="deck.length > 0">
+    <ion-card-content>
+      <button *ngFor="let letter of deck" (click)="fboard(letter)" ion-button color="primary" outline style="width: 40px; height: 60px;">{{ letter }}</button>
+      <!-- <button *ngFor="let letter of deck" (click)="addToBoard(letter)" ion-button color="primary" outline style="border-radius:50px 50px 50px 50px;">{{ letter }}</button> -->
+      <ion-note padding-top margin-top float-right text-right>DECK</ion-note>
+    </ion-card-content>
+  </ion-card>
+
+  <button (click)="fcheck()" ion-button color="primary" round full icon-start>
+    <ion-icon name='checkmark' is-active="false"></ion-icon>
+    Check
+  </button>
+
+  <button (click)="fpass()" ion-button color="danger" round full icon-start>
+    <ion-icon name='switch' is-active="false"></ion-icon>
+    Pass
+  </button>
+
+</ion-content>
