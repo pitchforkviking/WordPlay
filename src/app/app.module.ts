@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
+import { HttpModule } from '@angular/http';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { WordPlay } from './app.component';
@@ -15,6 +16,7 @@ import { GamePage } from '../pages/game/game';
   ],
   imports: [
     BrowserModule,
+    HttpModule,
     IonicModule.forRoot(WordPlay)
   ],
   bootstrap: [IonicApp],

@@ -9,8 +9,13 @@
   </ion-card>
 
   <ion-card *ngIf="board.length > 0">
-    <ion-card-content>
-      <button *ngFor="let letter of board" (click)="fbin(letter)" ion-button color="secondary" outline style="width: 40px; height: 60px;">{{ letter }}</button>
+    <ion-card-content *ngIf="isValid === true">
+      <button *ngFor="let letter of board" (click)="fboard(letter)" ion-button color="secondary" outline style="width: 40px; height: 60px;">{{ letter }}</button>
+      <!-- <button *ngFor="let letter of board" (click)="addToBin(letter)" ion-button color="secondary" outline style="border-radius:50px 50px 50px 50px;">{{ letter }}</button> -->
+      <ion-note padding-top margin-top float-right text-right>BOARD</ion-note>
+    </ion-card-content>
+    <ion-card-content *ngIf="isValid === false">
+      <button *ngFor="let letter of board" (click)="fboard(letter)" ion-button color="danger" outline style="width: 40px; height: 60px;">{{ letter }}</button>
       <!-- <button *ngFor="let letter of board" (click)="addToBin(letter)" ion-button color="secondary" outline style="border-radius:50px 50px 50px 50px;">{{ letter }}</button> -->
       <ion-note padding-top margin-top float-right text-right>BOARD</ion-note>
     </ion-card-content>
@@ -18,7 +23,7 @@
 
   <ion-card *ngIf="bin.length > 0">
     <ion-card-content>
-      <button *ngFor="let letter of bin" (click)="fboard(letter)" ion-button color="light" outline style="width: 40px; height: 60px;">{{ letter }}</button>
+      <button *ngFor="let letter of bin" (click)="fbin(letter)" ion-button color="light" outline style="width: 40px; height: 60px;">{{ letter }}</button>
       <!-- <button *ngFor="let letter of bin" (click)="addToBoard(letter)" ion-button color="light" outline style="border-radius:50px 50px 50px 50px;">{{ letter }}</button> -->
       <ion-note padding-top margin-top float-right text-right>BIN</ion-note>
     </ion-card-content>
@@ -26,7 +31,7 @@
 
   <ion-card *ngIf="deck.length > 0">
     <ion-card-content>
-      <button *ngFor="let letter of deck" (click)="fboard(letter)" ion-button color="primary" outline style="width: 40px; height: 60px;">{{ letter }}</button>
+      <button *ngFor="let letter of deck" (click)="fdeck(letter)" ion-button color="primary" outline style="width: 40px; height: 60px;">{{ letter }}</button>
       <!-- <button *ngFor="let letter of deck" (click)="addToBoard(letter)" ion-button color="primary" outline style="border-radius:50px 50px 50px 50px;">{{ letter }}</button> -->
       <ion-note padding-top margin-top float-right text-right>DECK</ion-note>
     </ion-card-content>
