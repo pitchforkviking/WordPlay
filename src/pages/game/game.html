@@ -1,50 +1,74 @@
 <ion-content padding>
 
-  <ion-card *ngIf="borrow.length > 0">
-    <ion-card-content>
-      <button *ngFor="let letter of borrow" (click)="fborrow(letter)" ion-button color="dark" outline style="width: 40px; height: 60px;">{{ letter }}</button>
-      <!-- <button *ngFor="let letter of borrow" (click)="addToBoard(letter)" ion-button color="dark" outline style="border-radius:50px 50px 50px 50px;">{{ letter }}</button> -->
-      <ion-note padding-top margin-top float-right text-right>BORROW</ion-note>
-    </ion-card-content>
-  </ion-card>
+  <div *ngIf="gameOn === false">
+    <button (click)="f2p()" ion-button color="primary" round full icon-start>
+      <ion-icon name='bicycle' is-active="false"></ion-icon>
+      2 Player
+    </button>
 
-  <ion-card *ngIf="board.length > 0">
-    <ion-card-content *ngIf="isValid === true">
-      <button *ngFor="let letter of board" (click)="fboard(letter)" ion-button color="secondary" outline style="width: 40px; height: 60px;">{{ letter }}</button>
-      <!-- <button *ngFor="let letter of board" (click)="addToBin(letter)" ion-button color="secondary" outline style="border-radius:50px 50px 50px 50px;">{{ letter }}</button> -->
-      <ion-note padding-top margin-top float-right text-right>BOARD</ion-note>
-    </ion-card-content>
-    <ion-card-content *ngIf="isValid === false">
-      <button *ngFor="let letter of board" (click)="fboard(letter)" ion-button color="danger" outline style="width: 40px; height: 60px;">{{ letter }}</button>
-      <!-- <button *ngFor="let letter of board" (click)="addToBin(letter)" ion-button color="secondary" outline style="border-radius:50px 50px 50px 50px;">{{ letter }}</button> -->
-      <ion-note padding-top margin-top float-right text-right>BOARD</ion-note>
-    </ion-card-content>
-  </ion-card>
+    <button (click)="f4p()" ion-button color="secondary" round full icon-start>
+      <ion-icon name='car' is-active="false"></ion-icon>
+      4 Player
+    </button>
+  </div>
 
-  <ion-card *ngIf="bin.length > 0">
-    <ion-card-content>
-      <button *ngFor="let letter of bin" (click)="fbin(letter)" ion-button color="light" outline style="width: 40px; height: 60px;">{{ letter }}</button>
-      <!-- <button *ngFor="let letter of bin" (click)="addToBoard(letter)" ion-button color="light" outline style="border-radius:50px 50px 50px 50px;">{{ letter }}</button> -->
-      <ion-note padding-top margin-top float-right text-right>BIN</ion-note>
-    </ion-card-content>
-  </ion-card>
+  <div *ngIf="gameOn === true">
+    <ion-card>
+      <ion-card-content>
 
-  <ion-card *ngIf="deck.length > 0">
-    <ion-card-content>
-      <button *ngFor="let letter of deck" (click)="fdeck(letter)" ion-button color="primary" outline style="width: 40px; height: 60px;">{{ letter }}</button>
-      <!-- <button *ngFor="let letter of deck" (click)="addToBoard(letter)" ion-button color="primary" outline style="border-radius:50px 50px 50px 50px;">{{ letter }}</button> -->
-      <ion-note padding-top margin-top float-right text-right>DECK</ion-note>
-    </ion-card-content>
-  </ion-card>
+        <button ion-item>
+          <h5>{{player}} ({{lastWord}})</h5>
+          <ion-icon name="medal" item-end></ion-icon>
+          <ion-badge class="badge" item-end>{{score}}</ion-badge>
+        </button>
 
-  <button (click)="fcheck()" ion-button color="primary" round full icon-start>
-    <ion-icon name='checkmark' is-active="false"></ion-icon>
-    Check
-  </button>
+      </ion-card-content>
+    </ion-card>
 
-  <button (click)="fpass()" ion-button color="danger" round full icon-start>
-    <ion-icon name='switch' is-active="false"></ion-icon>
-    Pass
-  </button>
+    <ion-card *ngIf="borrow.length > 0">
+      <ion-card-content>
+        <button class="btnCard" *ngFor="let letter of borrow" (click)="fborrow(letter)" ion-button color="dark" outline>{{ letter }}</button>
+        <ion-note padding-top margin-top float-right text-right>BORROW</ion-note>
+      </ion-card-content>
+    </ion-card>
 
+    <ion-card *ngIf="board.length > 0">
+      <ion-card-content *ngIf="isValid === true && isPlaced === false">
+        <button class="btnCard" *ngFor="let letter of board" (click)="fboard(letter)" ion-button color="secondary" outline>{{ letter }}</button>
+        <ion-note padding-top margin-top float-right text-right>BOARD</ion-note>
+      </ion-card-content>
+      <ion-card-content *ngIf="isValid === false && isPlaced === false">
+        <button class="btnCard" *ngFor="let letter of board" (click)="fboard(letter)" ion-button color="danger" outline>{{ letter }}</button>
+        <ion-note padding-top margin-top float-right text-right>BOARD</ion-note>
+      </ion-card-content>
+      <ion-card-content *ngIf="isPlaced === true">
+        <button class="btnCard" *ngFor="let letter of board" (click)="fboard(letter)" ion-button color="primary" outline>{{ letter }}</button>
+        <ion-note padding-top margin-top float-right text-right>BOARD</ion-note>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="bin.length > 0">
+      <ion-card-content>
+        <button class="btnCard" *ngFor="let letter of bin" (click)="fbin(letter)" ion-button color="light" outline>{{ letter }}</button>
+        <ion-note padding-top margin-top float-right text-right>BIN</ion-note>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="deck.length > 0">
+      <ion-card-content>
+        <button class="btnCard" *ngFor="let letter of deck" (click)="fdeck(letter)" ion-button color="primary" outline style="width: 40px; height: 60px;">{{ letter }}</button>
+        <ion-note padding-top margin-top float-right text-right>DECK</ion-note>
+      </ion-card-content>
+    </ion-card>
+
+    <button (click)="fcheck()" ion-button color="primary" round full icon-start>
+      <ion-icon name='checkmark' is-active="false"></ion-icon>
+      OK
+    </button>
+
+    <button (click)="fpass()" ion-button color="danger" round full icon-start>
+      <ion-icon name='switch' is-active="false"></ion-icon>
+      Pass
+    </button>
+  </div>
 </ion-content>
