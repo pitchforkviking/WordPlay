@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Http } from '@angular/http';
 import { NavController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
+//import { Subscription } from "rxjs/Subscription";
+import { TimerObservable } from 'rxjs/observable/TimerObservable';
 
 import { HomePage } from '../home/home';
 
@@ -10,8 +12,18 @@ import { HomePage } from '../home/home';
 })
 export class GamePage {
 
+  public timer: any;
+  public subscriber: any;
+  public count: number = 20;
+
   public isValid: boolean = false;
   public isPlaced: boolean = false;
+
+  public readyPlayerOne: boolean = false;
+  public readyPlayerTwo: boolean = false;
+
+  public playerOne: any[] = [];
+  public playerTwo: any[] = [];
 
   public gameOn: boolean = false;
 
@@ -22,12 +34,11 @@ export class GamePage {
   public mode: number = 0;
   public turn: number = 2;
 
-
   public p2p: any = [
     {
-      name: "Alex",
-      avatar: "assets/imgs/Alex.png",
-      lastWord: "",
+      name: "",
+      //avatar: "assets/imgs/Alex.png",
+      //lastWord: "",
       index: 0,
       score: 0,
       deck: [],
@@ -35,9 +46,9 @@ export class GamePage {
       bin: []
     },
     {
-      name: "Zoey",
-      avatar: "assets/imgs/Zoey.png",
-      lastWord: "",
+      name: "",
+      //avatar: "assets/imgs/Zoey.png",
+      //lastWord: "",
       index: 1,
       score: 0,
       deck: [],
@@ -46,8 +57,8 @@ export class GamePage {
     }
   ];
 
-  public a2p: any[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-  public a4p: any[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+  public letters:any = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+  //public a4p: any[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
   public player: string;
   public avatar: string;
@@ -57,6 +68,11 @@ export class GamePage {
   public board: any[] = []
   public borrow: any[] = []
   public deck: any[] = []
+
+  public enemy: any = {
+    name: "",
+    score: 0
+  };
 
   constructor(
     public navCtrl: NavController,
@@ -72,6 +88,45 @@ export class GamePage {
         }
       );
 
+  }
+
+  fpush(letter:any){
+    if(this.readyPlayerOne === false){
+      this.playerOne.push(letter);
+    }
+    else{
+      this.playerTwo.push(letter);
+    }
+  }
+
+  fflush(letter:any){
+    if(this.readyPlayerOne === false){
+      this.playerOne.splice(this.playerOne.indexOf(letter),1);
+    }
+    else{
+      this.playerTwo.splice(this.playerTwo.indexOf(letter),1);
+    }
+  }
+
+  freadyplayerone(){
+    this.readyPlayerOne = true;
+    this.player = this.playerOne.join('');
+  }
+
+  freadyplayertwo(){
+    this.readyPlayerTwo = true;
+    this.enemy.name = this.playerTwo.join('');
+    this.f2p();
+  }
+
+  ftimer(){
+    this.timer = TimerObservable.create(1000, 1000);
+    this.subscriber = this.timer.subscribe(t=> {
+      --this.count;
+      if(this.count === 0){
+        this.fpass();
+      }
+    });
   }
 
   fshuffle(array:any) {
@@ -92,22 +147,27 @@ export class GamePage {
 
   f2p(){
     this.mode = 2;
-    this.a2p = this.fshuffle(this.a2p);
+    this.letters = this.fshuffle(this.letters);
 
-    this.p2p[0].deck = this.a2p.splice(0, Math.ceil(this.a2p.length / 2));
-    this.p2p[1].deck = this.a2p;
+    this.p2p[0].deck = this.letters.splice(0, Math.ceil(this.letters.length / 2));
+    this.p2p[1].deck = this.letters;
 
-    this.player = this.p2p[0].name;
-    this.avatar = this.p2p[0].avatar;
+    this.p2p[0].name = this.player;
+    //this.avatar = this.p2p[0].avatar;
     this.score = this.p2p[0].score;
     this.deck = this.p2p[0].deck;
 
+    this.p2p[1].name = this.enemy.name;
+    this.enemy.score = this.p2p[1].score;
+
     this.gameOn = true;
+
+    this.ftimer();
   }
 
   f4p(){
     this.mode = 4;
-    this.a2p = this.fshuffle(this.a2p);
+    this.letters = this.fshuffle(this.letters);
 
     this.gameOn = true;
   }
@@ -143,6 +203,8 @@ export class GamePage {
 
   fpass() {
 
+    this.count = 60;
+
     let index = this.pass % this.mode;
 
     this.p2p[index].lastWord = this.lastWord;
@@ -150,6 +212,9 @@ export class GamePage {
     this.p2p[index].deck = this.deck;
     this.p2p[index].board = this.board;
     //this.p2p[index].bin = this.bin;
+
+    this.enemy.name = this.player;
+    this.enemy.score = this.score;
 
     ++this.pass;
     index = this.pass % this.mode;
@@ -160,21 +225,37 @@ export class GamePage {
 
     if(this.turn === 10){
       let alert = this.alertCtrl.create({
-        title: this.p2p[0].score > this.p2p[1].score ? this.p2p[0].name : this.p2p[1].name,
-        subTitle: 'Winner, Winner. Chicken Dinner!',
+        title: (this.p2p[0].score > this.p2p[1].score ? this.p2p[0].name : this.p2p[1].name) + ' WON :)',
+        //subTitle: 'Winner, Winner. Chicken Dinner!',
         buttons: ['OK']
       });
       alert.present();
+      this.subscriber.unsubscribe();
       this.navCtrl.push(HomePage)
     }
+    else{
+      this.borrow = this.board;
+      this.player = this.p2p[index].name;
+      this.avatar = this.p2p[index].avatar;
+      this.score = this.p2p[index].score;
+      this.deck = this.p2p[index].deck;
+      //this.bin = this.p2p[index].bin;
+      this.board = this.p2p[index].board;
 
-    this.borrow = this.board;
-    this.player = this.p2p[index].name;
-    this.avatar = this.p2p[index].avatar;
-    this.score = this.p2p[index].score;
-    this.deck = this.p2p[index].deck;
-    //this.bin = this.p2p[index].bin;
-    this.board = this.p2p[index].board;
+      let confirm = this.alertCtrl.create({
+        title: this.player + '\'S TURN :(',
+        //subTitle: 'Borrowing is legal, try it!',
+        buttons: [
+          {
+            text: 'OK',
+            handler: () => {
+              this.count = 20;
+            }
+          }
+        ]
+      });
+      confirm.present();
+    }
   }
 
   fcheck(){

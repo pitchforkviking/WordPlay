@@ -7,10 +7,19 @@
   border-radius:50px 50px 50px 50px;
 }
 
-.badge{
+.badgeSquare{
   //padding: 12% 0;
   font-size: large;
   //width: 30px;
   //height: 30px;
   //border-radius:50px 50px 50px 50px;
+
+}
+
+.badgeCircle{
+  padding: 24% 0;
+  font-size: large;
+  width: 50px;
+  height: 50px;
+  border-radius:50px 50px 50px 50px;
 }
