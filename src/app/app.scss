@@ -8,18 +8,45 @@
 }
 
 .badgeSquare{
-  //padding: 12% 0;
   font-size: large;
-  //width: 30px;
-  //height: 30px;
-  //border-radius:50px 50px 50px 50px;
-
 }
 
 .badgeCircle{
-  padding: 24% 0;
+  //padding: 6% 0;
+  padding-top: 9px;
+  text-align: center;
+  font-size: large;
+  width: 36px;
+  height: 36px;
+  border-radius:50px 50px 50px 50px;
+}
+
+.badgeScore{
+  //padding: 6% 0;
+  padding-top: 15px;
+  text-align: center;
   font-size: large;
   width: 50px;
   height: 50px;
+  border-radius:50px 50px 50px 50px;
+}
+
+.badgeCount{
+  //padding: 18% 0;
+  padding-top: 15px;
+  text-align: center;
+  font-size: large;
+  width: 50px;
+  height: 50px;
+  border-radius:50px 50px 50px 50px;
+}
+
+.badgeTimer{
+  //padding: 18% 0;
+  padding-top: 9px;
+  text-align: center;
+  font-size: large;
+  width: 36px;
+  height: 36px;
   border-radius:50px 50px 50px 50px;
 }

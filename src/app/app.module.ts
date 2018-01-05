@@ -5,13 +5,25 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { WordPlay } from './app.component';
 
-import { HomePage } from '../pages/home/home';
+//To be removed soon
 import { GamePage } from '../pages/game/game';
+
+import { HomePage } from '../pages/home/home';
+
+import { DuelPage } from '../pages/duel/duel';
+import { PartyPage } from '../pages/party/party';
+import { SurvivePage } from '../pages/survive/survive';
+
 
 @NgModule({
   declarations: [
     WordPlay,
     HomePage,
+
+    DuelPage,
+    PartyPage,
+    SurvivePage,
+    //remove
     GamePage
   ],
   imports: [
@@ -23,6 +35,11 @@ import { GamePage } from '../pages/game/game';
   entryComponents: [
     WordPlay,
     HomePage,
+
+    DuelPage,
+    PartyPage,
+    SurvivePage,
+    //remove
     GamePage
   ],
   providers: [

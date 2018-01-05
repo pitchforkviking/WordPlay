@@ -79,12 +79,12 @@ export class GamePage {
     public alertCtrl: AlertController,
     public http: Http) {
 
-      this.http.get('../../assets/files/dictionary.txt').subscribe(
+      this.http.get('assets/files/dictionary.txt').subscribe(
         data => {
           this.dictionary = data.text()
         },
         err => {
-          alert("Error")
+          alert("Couldn't load the dictionary :(")
         }
       );
 
@@ -92,10 +92,14 @@ export class GamePage {
 
   fpush(letter:any){
     if(this.readyPlayerOne === false){
-      this.playerOne.push(letter);
+      if(this.playerOne.length < 4){
+        this.playerOne.push(letter);
+      }
     }
     else{
-      this.playerTwo.push(letter);
+        if(this.playerTwo.length < 4){
+          this.playerTwo.push(letter);
+        }
     }
   }
 
@@ -243,7 +247,7 @@ export class GamePage {
       this.board = this.p2p[index].board;
 
       let confirm = this.alertCtrl.create({
-        title: this.player + '\'S TURN :(',
+        title: 'PASS THE DEVICE TO ' + this.player + ' :(',
         //subTitle: 'Borrowing is legal, try it!',
         buttons: [
           {
