@@ -1,70 +1,52 @@
 <ion-content padding>
 
-  <div *ngIf="gameOn === false">
+  <div *ngIf="gameOn === false && isLobby === true">
+      <button (click)="fhost()" ion-button color="primary" round full icon-start>
+        <ion-icon name='people' is-active="false"></ion-icon>
+        Host
+      </button>
+      <button (click)="fjoin()" ion-button color="secondary" round full icon-start>
+        <ion-icon name='people' is-active="false"></ion-icon>
+        Join
+      </button>
+  </div>
 
-    <button *ngIf="readyPlayerOne === true" ion-button color="light" round full icon-start>
+  <div *ngIf="gameOn === false && isLobby === false">
+
+    <button *ngIf="isWaiting === true" ion-button color="light" round full icon-start>
       <ion-icon name='people' is-active="false"></ion-icon>
-      Player ONE
-    </button>
-    <button *ngIf="readyPlayerTwo === true" ion-button color="light" round full icon-start>
-      <ion-icon name='people' is-active="false"></ion-icon>
-      Player TWO
-    </button>
-    <button *ngIf="readyPlayerThree === true" ion-button color="light" round full icon-start>
-      <ion-icon name='people' is-active="false"></ion-icon>
-      Player THREE
-    </button>
-    <button *ngIf="readyPlayerFour === true" ion-button color="light" round full icon-start>
-      <ion-icon name='people' is-active="false"></ion-icon>
-      Player FOUR
+      Waiting for Players
     </button>
 
-    <ion-card *ngIf="readyPlayerOne === true && playerOne.length > 0">
+    <button *ngIf="readyPlayer === false" ion-button color="light" round full icon-start>
+      <ion-icon name='people' is-active="false"></ion-icon>
+      Player
+    </button>   
+    
+    <ion-card *ngIf="readyPlayer === false && isHost === false && games.length > 0">
       <ion-card-content>
-        <button class="btnCard" *ngFor="let letter of playerOne" (click)="fflush(letter)" ion-button color="secondary" outline>{{ letter }}</button>
+        <button *ngFor="let game of games" (click)="fgame(game)" ion-button color="secondary" outline>{{ game }}</button>
       </ion-card-content>
-    </ion-card>
-    <ion-card *ngIf="readyPlayerTwo === true && playerTwo.length > 0">
-      <ion-card-content>
-        <button class="btnCard" *ngFor="let letter of playerTwo" (click)="fflush(letter)" ion-button color="danger" outline>{{ letter }}</button>
-      </ion-card-content>
-    </ion-card>
-    <ion-card *ngIf="readyPlayerThree === true && playerThree.length > 0">
-      <ion-card-content>
-        <button class="btnCard" *ngFor="let letter of playerThree" (click)="fflush(letter)" ion-button color="secondary" outline>{{ letter }}</button>
-      </ion-card-content>
-    </ion-card>
-    <ion-card *ngIf="readyPlayerFour === true && playerFour.length > 0">
-      <ion-card-content>
-        <button class="btnCard" *ngFor="let letter of playerFour" (click)="fflush(letter)" ion-button color="danger" outline>{{ letter }}</button>
-      </ion-card-content>
-    </ion-card>
+    </ion-card> 
 
-    <ion-card>
+    <ion-card *ngIf="readyPlayer === false && playerChar.length > 0">
+      <ion-card-content>
+        <button class="btnCard" *ngFor="let letter of playerChar" (click)="fflush(letter)" ion-button color="secondary" outline>{{ letter }}</button>
+      </ion-card-content>
+    </ion-card>      
+
+    <ion-card *ngIf="readyPlayer === false">
       <ion-card-content>
         <button class="btnCard" *ngFor="let letter of alphabet" (click)="fpush(letter)" ion-button color="primary" outline>{{ letter }}</button>
       </ion-card-content>
     </ion-card>
 
-    <button *ngIf="readyPlayerOne === true && playerOne.length > 0" (click)="freadyplayerone()" ion-button color="secondary" round full icon-start>
+    <button *ngIf="readyPlayer === false && playerChar.length > 0" (click)="freadyplayer()" ion-button color="secondary" round full icon-start>
       <ion-icon name='person-add' is-active="false"></ion-icon>
-      Ready Player One
+      Ready >
     </button>
-    <button *ngIf="readyPlayerTwo === true && playerTwo.length > 0" (click)="freadyplayertwo()" ion-button color="danger" round full icon-start>
-      <ion-icon name='person' is-active="false"></ion-icon>
-      Ready Player Two
-    </button>
-    <button *ngIf="readyPlayerThree === true && playerThree.length > 0" (click)="freadyplayerthree()" ion-button color="secondary" round full icon-start>
-      <ion-icon name='person-add' is-active="false"></ion-icon>
-      Ready Player Three
-    </button>
-    <button *ngIf="readyPlayerFour === true && playerFour.length > 0" (click)="freadyplayerfour()" ion-button color="danger" round full icon-start>
-      <ion-icon name='person' is-active="false"></ion-icon>
-      Ready Player Four
-    </button>
-
-
-  </div>
+    
+  </div>  
 
   <div *ngIf="gameOn === true">
 
@@ -87,10 +69,11 @@
     </span>
 
     <span float-right style="width:40%;">
-      <ion-item no-lines *ngIf="lastWords.length > 0">
-        <ion-note *ngFor="let word of lastWords" color="dark" item-end>{{word}}</ion-note>
-      </ion-item>
-    </span>
+        <ion-item no-lines>        
+          <ion-badge class="badgeSquare" color="light" item-end>{{enemy.name}}</ion-badge>
+          <ion-badge class="badgeCircle" color="dark" item-end>{{enemy.score}}</ion-badge>
+        </ion-item>
+      </span>
 
     <ion-card *ngIf="player.borrow.length > 0">
       <ion-card-content>
@@ -131,4 +114,6 @@
       Pass
     </button>
   </div>
+
 </ion-content>
+      

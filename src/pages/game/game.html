@@ -33,7 +33,8 @@
     <button *ngIf="readyPlayerOne === false && playerOne.length > 0" (click)="freadyplayerone()" ion-button color="secondary" round full icon-start>
       <ion-icon name='person-add' is-active="false"></ion-icon>
       Ready Player One
-    </button>
+    </button>    
+
     <button *ngIf="readyPlayerOne === true && playerTwo.length > 0" (click)="freadyplayertwo()" ion-button color="danger" round full icon-start>
       <ion-icon name='person' is-active="false"></ion-icon>
       Ready Player Two
@@ -130,4 +131,34 @@
       Pass
     </button>
   </div>
+
+  <ion-item>
+    <ion-label floating>Key</ion-label>
+    <ion-input [(ngModel)]="key" type="text"></ion-input>
+  </ion-item>
+
+  <div class="container">
+    <h2>Hello {{nick}}!</h2>
+    <form (ngSubmit)="sendMessage()" #chatForm="ngForm">
+      <div>
+        <ion-label for="message" floating>Message</ion-label>
+        <ion-input type="text" id="message" name="message" [(ngModel)]="message" required></ion-input>
+      </div>
+      <button type="submit" id="sendmessage" [disabled]="!chatForm.valid" ion-button color="light" round icon-start>
+        Send
+      </button>
+    </form>
+  </div>
+
+  <div class="container" *ngIf="messages.length > 0">
+    <div *ngFor="let message of messages">
+      <span>{{message}}</span>
+    </div>
+  </div>
+
+  <button (click)="fconnect()" ion-button color="secondary" round full icon-start>
+    <ion-icon name='person-add' is-active="false"></ion-icon>
+    Host
+  </button>
+
 </ion-content>

@@ -2,8 +2,10 @@ import { Component } from '@angular/core';
 import { Http } from '@angular/http';
 import { NavController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
+import { ModalController } from 'ionic-angular';
 //import { Subscription } from "rxjs/Subscription";
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
+import { HubConnection } from '@aspnet/signalr-client';
 
 import { HomePage } from '../home/home';
 
@@ -11,6 +13,13 @@ import { HomePage } from '../home/home';
   templateUrl: 'game.html'
 })
 export class GamePage {
+
+  private _hubConnection: HubConnection;
+
+  nick = '';
+  message = '';
+  messages: string[] = [];
+  public key: string;
 
   public timer: any;
   public subscriber: any;
@@ -77,6 +86,7 @@ export class GamePage {
   constructor(
     public navCtrl: NavController,
     public alertCtrl: AlertController,
+    public modalCtrl: ModalController,
     public http: Http) {
 
       this.http.get('assets/files/dictionary.txt').subscribe(
@@ -89,6 +99,38 @@ export class GamePage {
       );
 
   }
+
+  public fconnect(): void {    
+    alert(this.key);
+    this._hubConnection
+      .invoke('Connect', this.key)
+      .catch(err => console.error(err));
+  }
+
+  public sendMessage(): void {
+    this._hubConnection
+      .invoke('sendToClient', this.key)
+      .catch(err => console.error(err));
+  }  
+
+  ngOnInit() {
+    this.nick = window.prompt('Your name:', 'John');
+
+    this._hubConnection = new HubConnection('http://localhost:5000/chat');
+
+    this._hubConnection
+      .start()
+      .then(() => {
+        console.log('Connection started!');
+      })
+      .catch(err => console.log('Error while establishing connection :('));
+
+      this._hubConnection.on('sendToAll', (nick: string, receivedMessage: string) => {
+        const text = `${nick}: ${receivedMessage}`;
+        this.messages.push(text);
+      });
+
+    }
 
   fpush(letter:any){
     if(this.readyPlayerOne === false){
@@ -191,12 +233,6 @@ export class GamePage {
     this.board.splice(this.board.indexOf(letter),1);
   }
 
-  fbin(letter:any){
-    this.board.push(letter);
-    this.isPlaced = true;
-    this.bin.splice(this.bin.indexOf(letter),1);
-  }
-
   fdeck(letter:any){
     if(this.board.length < this.turn){
       this.board.push(letter);
@@ -238,6 +274,9 @@ export class GamePage {
       this.navCtrl.push(HomePage)
     }
     else{
+      this.isValid = false;
+      this.isPlaced = false;
+
       this.borrow = this.board;
       this.player = this.p2p[index].name;
       this.avatar = this.p2p[index].avatar;
@@ -246,19 +285,25 @@ export class GamePage {
       //this.bin = this.p2p[index].bin;
       this.board = this.p2p[index].board;
 
-      let confirm = this.alertCtrl.create({
-        title: 'PASS THE DEVICE TO ' + this.player + ' :(',
-        //subTitle: 'Borrowing is legal, try it!',
-        buttons: [
-          {
-            text: 'OK',
-            handler: () => {
-              this.count = 20;
-            }
-          }
-        ]
+      let modal = this.modalCtrl.create("PassPage", {player: this.player});
+      modal.onDidDismiss(() => {
+        this.count = 20;
       });
-      confirm.present();
+      modal.present();
+
+      // let confirm = this.alertCtrl.create({
+      //   title: 'PASS THE DEVICE TO ' + this.player + ' :(',
+      //   //subTitle: 'Borrowing is legal, try it!',
+      //   buttons: [
+      //     {
+      //       text: 'OK',
+      //       handler: () => {
+      //         this.count = 20;
+      //       }
+      //     }
+      //   ]
+      // });
+      // confirm.present();
     }
   }
 

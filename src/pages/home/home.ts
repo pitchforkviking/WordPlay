@@ -4,6 +4,8 @@ import { NavController } from 'ionic-angular';
 import { GamePage } from '../game/game';
 
 import { SurvivePage } from '../survive/survive';
+import { DuelPage } from '../duel/duel';
+import { BattlePage } from '../battle/battle';
 import { PartyPage } from '../party/party';
 
 @Component({
@@ -15,12 +17,16 @@ export class HomePage {
 
   }
 
+  fsurvive(){
+    this.navCtrl.push(SurvivePage)
+  }
+
   fduel() {
-    this.navCtrl.push(GamePage)
+    this.navCtrl.push(DuelPage)
   }
 
   fbattle(){
-    this.navCtrl.push(SurvivePage)
+    this.navCtrl.push(BattlePage)
   }
 
   fparty(){
@@ -31,8 +37,9 @@ export class HomePage {
     this.navCtrl.push(GamePage)
   }
 
-  fsurvive(){
-    this.navCtrl.push(SurvivePage)
+  ftest(){
+    this.navCtrl.push(GamePage)
   }
+  
 
 }

@@ -11,8 +11,11 @@ import { GamePage } from '../pages/game/game';
 import { HomePage } from '../pages/home/home';
 
 import { DuelPage } from '../pages/duel/duel';
+import { BattlePage } from '../pages/battle/battle';
 import { PartyPage } from '../pages/party/party';
 import { SurvivePage } from '../pages/survive/survive';
+
+// import { PassPage } from '../pages/pass/pass';
 
 
 @NgModule({
@@ -21,8 +24,11 @@ import { SurvivePage } from '../pages/survive/survive';
     HomePage,
 
     DuelPage,
+    BattlePage,
     PartyPage,
     SurvivePage,
+
+    // PassPage,
     //remove
     GamePage
   ],
@@ -37,8 +43,11 @@ import { SurvivePage } from '../pages/survive/survive';
     HomePage,
 
     DuelPage,
+    BattlePage,
     PartyPage,
     SurvivePage,
+
+    // PassPage,
     //remove
     GamePage
   ],

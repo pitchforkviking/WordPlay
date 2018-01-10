@@ -10,6 +10,12 @@
 
 <ion-content padding>
   <p>
+    <button (click)="fsurvive()" ion-button color="danger" round full icon-start>
+      <ion-icon name='flame' is-active="false"></ion-icon>
+      Survive (Single Player)
+    </button>
+  </p>
+  <p>
     <button (click)="fduel()" ion-button color="primary" round full icon-start>
       <ion-icon name='play' is-active="false"></ion-icon>
       Duel (2 Player Local)
@@ -32,11 +38,11 @@
       <ion-icon name='bus' is-active="false"></ion-icon>
       Arena (4 Player Online)
     </button>
-  </p>
+  </p>  
   <p>
-    <button (click)="fsurvive()" ion-button color="danger" round full icon-start>
-      <ion-icon name='flame' is-active="false"></ion-icon>
-      Survive (Single Player)
-    </button>
-  </p>
+      <button (click)="ftest()" ion-button color="dark" round full icon-start>
+        <ion-icon name='bus' is-active="false"></ion-icon>
+        Testing
+      </button>
+    </p>  
 </ion-content>
