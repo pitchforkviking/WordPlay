@@ -176,6 +176,41 @@ export class PartyPage {
     return { first: first, second: second};
   }
 
+  funique(array: any) {
+    var a = array.concat();
+    for(var i=0; i<a.length; ++i) {
+        for(var j=i+1; j<a.length; ++j) {
+            if(a[i] === a[j])
+                a.splice(j--, 1);
+        }
+    }
+
+    return a;
+  }
+
+  fdiff (first: any, second: any) {
+
+    var a = [], diff = [];
+
+    for (let i = 0; i < first.length; i++) {
+        a[first[i]] = true;
+    }
+
+    for (let i = 0; i < second.length; i++) {
+        if (a[second[i]]) {
+            delete a[second[i]];
+        } else {
+            a[second[i]] = true;
+        }
+    }
+
+    for (var k in a) {
+        diff.push(k);
+    }
+
+    return diff;
+  }
+
   // Begin game
   fbegin(){
 
@@ -205,8 +240,8 @@ export class PartyPage {
   fborrow(letter:any){
     if(this.player.board.length < this.turn){
       this.player.board.push(letter);
-      //this.isPlaced = true;
-      //this.borrow.splice(this.borrow.indexOf(letter),1);
+      this.isPlaced = true;
+      this.player.borrow.splice(this.player.borrow.indexOf(letter),1);
       --this.player.score;
     }
   }
@@ -283,9 +318,23 @@ export class PartyPage {
       this.isValid = false;
       this.isPlaced = false;
 
-      // Combined boards of other players
+      let count = 0;
+      let array = [];
+      while(count < this.mode){
+        if(count != index){
+          array = array.concat(this.players[count].board);        
+        }
+        ++count;
+      }
 
-      this.player = this.players[index];
+      let first = this.funique(array);      
+      
+
+      this.player = this.players[index];      
+
+      let second = this.player.deck.concat(this.player.board);
+
+      this.player.borrow = first.filter(function(x) { return second.indexOf(x) < 0 })
 
       let alert = this.alertCtrl.create({
         title: this.player.name,

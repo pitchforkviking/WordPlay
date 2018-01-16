@@ -5,8 +5,10 @@ import { ModalController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { HubConnection } from '@aspnet/signalr-client';
+import { ToastController } from 'ionic-angular';
 
 import {Player} from '../../models/player';
+import { HomePage } from '../home/home';
 
 @Component({
   templateUrl: 'battle.html'
@@ -28,6 +30,9 @@ export class BattlePage {
     public hasJoined: boolean = false;
     public isWaiting: boolean = false;
 
+    public messages: string[] = [];
+    public replies: string[] = ["Hello", "Good Luck", "Thanks", "Well Played", "Sorry", "Bye", "Come On", "Oops!", "D'oh!" ]
+
     public games: string[] = [];
 
     public playerChar: any[] = [];    
@@ -44,6 +49,7 @@ export class BattlePage {
     public pass: number = 0;
     public mode: number = 2;
     public turn: number = 2;
+    public play: number = 0;
 
     public isValid: boolean = false;
     public isPlaced: boolean = false;  
@@ -52,6 +58,7 @@ export class BattlePage {
         public navCtrl: NavController,
         public alertCtrl: AlertController,
         public modalCtrl: ModalController,
+        public toastCtrl: ToastController,
         public http: Http) {
 
         // Load dictionary
@@ -64,7 +71,7 @@ export class BattlePage {
         }
         );
 
-        this._hubConnection = new HubConnection('http://localhost:5000/chat');
+        this._hubConnection = new HubConnection('https://wordwarhub.azurewebsites.net/chat');
 
         this._hubConnection
             .start()
@@ -75,22 +82,56 @@ export class BattlePage {
 
         this._hubConnection
             .on('fbroadcast', (message: string) => {
-                alert(message);
+                let toast = this.toastCtrl.create({
+                    message: message,
+                    duration: 3000,
+                    position: 'bottom'
+                  });
+                  toast.present();
             });
 
         this._hubConnection
-            .on('fjoin', (message: string) => {
-                alert(message);
+            .on('fjoin', (message: string) => {                   
+                this.messages.push(message);
             });
 
         this._hubConnection
-            .on('flist', (groups: string[]) => {
-                this.games = groups;
+            .on('flist', (groups: any[]) => {
+                if(Array.isArray(groups)){                
+                    groups.forEach(element => {
+                        this.games.push(element);
+                    });
+                }
+                else{
+                    this.games.push(groups);
+                }
             });
 
         this._hubConnection
             .on('fgroup', (message: string) => {
                 alert(message);
+            }); 
+
+        this._hubConnection
+            .on('fbegin', (playerArr: any[]) => {
+
+                this.fbegin();   
+
+                if(Array.isArray(playerArr)){    
+                    let index = 0;            
+                    playerArr.forEach(element => {
+                        this.players[index].name = element.name;
+                        ++index;
+                    });
+                }                
+                
+                this.gameOn = true; 
+                            
+            }); 
+
+        this._hubConnection
+            .on('fsync', (playerArray:any[], play: number) => {                
+                this.fpass(playerArray, play);               
             }); 
     }
 
@@ -105,9 +146,10 @@ export class BattlePage {
             this.isLobby = false;
         }
         else{
-            this.key = Math.random().toString(36).substring(7);;        
+            this.key = this.player.name + '-' + Math.random().toString(36).substring(7);
+            this.messages.push(this.key);    
             this._hubConnection
-                .invoke('Host', this.key, this.player.name)
+                .invoke('Host', this.key, this.mode, this.player.name)
                 .catch(err => console.error(err));
         }
     }
@@ -126,7 +168,7 @@ export class BattlePage {
         }
         else{
             this._hubConnection
-                .invoke('Join', this.key, this.player.name)
+                .invoke('Join', this.key, this.mode, this.player.name)
                 .catch(err => console.error(err));
         }
     }
@@ -154,9 +196,11 @@ export class BattlePage {
 
         if(this.isHost === true){
             this.fhost(this.player.name);
+            this.play = 0;
         }
         else{
             this.fjoin(this.player.name);
+            this.play = 1;
         }
 
         this.hasJoined = true;
@@ -168,10 +212,10 @@ export class BattlePage {
     ftimer(){
         this.timer = TimerObservable.create(1000, 1000);
         this.subscriber = this.timer.subscribe(t=> {
-        --this.count;
-        if(this.count === 0){
-            this.fpass();
-        }
+            --this.count;
+            if(this.count === 0){
+                this.fsync();
+            }
         });
     }
 
@@ -196,6 +240,12 @@ export class BattlePage {
     // Begin game
     fbegin(){
 
+        this.player = new Player();
+        this.enemy = new Player();
+
+        this.players.push(this.player);
+        this.players.push(this.enemy);
+
         // Shuffle cards
         let first = this.alphabet;
         first = first.sort(() => .5 - Math.random());
@@ -205,10 +255,30 @@ export class BattlePage {
         this.players[1].deck = first.slice(13,26);    
 
         // Start with Player 1
-        this.player = this.players[0];
-        this.enemy = this.players[1];
+        if(this.isHost){
+            this.player = this.players[0];            
+            this.enemy = this.players[1];
+        }
+        else{
+            this.player = this.players[1];
+            this.enemy = this.players[0];
+        }       
 
-        this.ftimer();
+        // Play if it's your turn, wait otherwise
+        if(this.pass % this.mode === this.play){
+            this.isWaiting = false;            
+            this.ftimer();
+        }
+        else{
+            this.isWaiting = true;
+        }
+    }
+
+    fbroadcast(reply: string){
+        let message = this.player.name + ": " + reply;
+        this._hubConnection
+                .invoke('Broadcast', this.key, message)
+                .catch(err => console.error(err));
     }
 
     // Borrow cards from other players
@@ -245,48 +315,81 @@ export class BattlePage {
         this.isPlaced = false;
 
         if(word !== ''){
-        var result = this.dictionary.match(new RegExp("\\b" + word + "\\b", 'g'));
-        if ( result !== null){
-            this.isValid = true;
-            this.isPlaced = true;
-            this.player.score += word.length;
-            this.dictionary = this.dictionary.replace(new RegExp("\\b" + word + "\\b", 'g'), '');        
+            var result = this.dictionary.match(new RegExp("\\b" + word + "\\b", 'g'));
+            if ( result !== null){
+                this.isValid = true;
+                this.isPlaced = true;
+                this.player.score += word.length;
+                this.dictionary = this.dictionary.replace(new RegExp("\\b" + word + "\\b", 'g'), '');        
 
-            this.fpass();
-        }
-        else{
-            this.isValid = false;
-            this.player.score -= 1;
-        }
+                this.fsync();
+            }
+            else{
+                this.isValid = false;
+                this.player.score -= 1;
+            }
         }
 
     }
 
-    // Passes turn to the other player
-    fpass() {
-
-        this.count = 20;
-
+    // Sync data between players
+    fsync(){
         var index = this.pass % this.mode;
         this.players[index] = this.player;
-        this.enemy = this.player;
 
-        ++this.pass;
+        this._hubConnection
+                .invoke('Sync', this.key, this.players, this.pass)
+                .catch(err => console.error(err));
+    }
 
-        index = this.pass % this.mode;
+    // Passes turn to the other player
+    fpass(playerArr: any[], play: number) {
 
+        this.count = 20;
+        this.pass = play;
+        this.players = playerArr;
+
+        var index = this.pass % this.mode;       
+        
         if(index === 0){
-        ++this.turn;
+            this.turn += 1;
+        }
+
+        // Play if it's your turn, wait otherwise
+        if(this.pass % this.mode === this.play){            
+            this.isWaiting = false;
+            this.ftimer();
+        }
+        else{
+            if(this.subscriber != undefined){
+                this.subscriber.unsubscribe();
+            }
+            
+            this.isWaiting = true;
+
+            // let alert = this.alertCtrl.create({
+            //     title: "Waiting :(",
+            //     buttons: ['OK']
+            // });    
+            // alert.present();
         }
 
         if(this.turn === 10){
-        let alert = this.alertCtrl.create({
-            title: "Game Over :)",
-            buttons: ['OK']
-        });
-        alert.present();
-        this.subscriber.unsubscribe();
 
+            this._hubConnection
+            .invoke('Delete', this.key)
+            .catch(err => console.error(err));
+
+            let alert = this.alertCtrl.create({
+                title: (this.players[0].score > this.players[1].score ? this.players[0].name : this.players[1].name) + " Won :)",
+                subTitle: 'Winner, Winner. Chicken Dinner!',
+                buttons: ['OK']
+            });
+
+            alert.present();
+            this.subscriber.unsubscribe();
+
+            this.navCtrl.push(HomePage);
         }
         else{
 
@@ -297,13 +400,17 @@ export class BattlePage {
 
         this.player = this.players[index];
 
+        ++index;
+        index = index % this.mode;
+        this.enemy = this.players[index];
+
         this.player.borrow = this.enemy.board;
 
-        let alert = this.alertCtrl.create({
-            title: this.player.name,
-            buttons: ['OK']
-        });
-        alert.present();
+        // let alert = this.alertCtrl.create({
+        //     title: this.player.name,
+        //     buttons: ['OK']
+        // });
+        // alert.present();
         }
     }
 

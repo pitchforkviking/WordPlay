@@ -70,7 +70,7 @@ export class SurvivePage {
       --this.count;
       if(this.count === 0){
         let confirm = this.alertCtrl.create({
-          title: 'YOU SCORED ' + this.score + ' POINTS :)',
+          title: 'You Scored ' + this.score + ' Points :)',
           //subTitle: 'Borrowing is legal, try it!',
           buttons: [
             {

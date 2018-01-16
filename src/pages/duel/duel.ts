@@ -121,7 +121,7 @@ export class DuelPage {
     second = new Array(count);
 
     if (length > count){
-        throw new RangeError("getRandom: more elements taken than available");
+        throw new RangeError("Something Went Wrong!");
     }
 
     while (length--) {
@@ -204,7 +204,7 @@ export class DuelPage {
   // Passes turn to the other player
   fpass() {
 
-    this.count = 20;
+    this.count = 60;
 
     var index = this.pass % this.mode;
     this.players[index] = this.player;
@@ -220,7 +220,8 @@ export class DuelPage {
 
     if(this.turn === 10){
       let alert = this.alertCtrl.create({
-        title: "Game Over :)",
+        title: (this.players[0].score > this.players[1].score ? this.players[0].name : this.players[1].name) + " Won :)",
+        subTitle: 'Winner, Winner. Chicken Dinner!',
         buttons: ['OK']
       });
       alert.present();
@@ -239,8 +240,16 @@ export class DuelPage {
       this.player.borrow = this.enemy.board;
 
       let alert = this.alertCtrl.create({
-        title: this.player.name,
-        buttons: ['OK']
+        title: 'Pass It To ' + this.player.name + ' :(',
+        subTitle: 'Borrowing is Legal, Try It!',
+        buttons: [
+              {
+                text: 'OK',
+                handler: () => {
+                  this.count = 20;
+                }
+              }
+            ]
       });
       alert.present();
     }
