@@ -11,10 +11,10 @@ import {Player} from '../../models/player';
 import { HomePage } from '../home/home';
 
 @Component({
-  templateUrl: 'battle.html'
+  templateUrl: 'arena.html'
 })
 
-export class BattlePage {
+export class ArenaPage {
 
     private _hubConnection: HubConnection;
     public key: string;
@@ -39,15 +39,14 @@ export class BattlePage {
 
     public players: Player[] = [];
 
-    public player: Player;
-    public enemy: Player;
+    public player: Player;    
 
     public timer: any;
     public subscriber: any;
     public count: number = 20;
 
     public pass: number = 0;
-    public mode: number = 2;
+    public mode: number = 4;
     public turn: number = 2;
     public play: number = 0;
 
@@ -91,8 +90,10 @@ export class BattlePage {
             });
 
         this._hubConnection
-            .on('fjoin', (message: string, count: number) => {                   
+            .on('fjoin', (message: string, play: number) => {
+                this.play = play;                                   
                 this.messages.push(message);
+                this.messages.push(this.play.toString());
             });
 
         this._hubConnection
@@ -115,6 +116,7 @@ export class BattlePage {
         this._hubConnection
             .on('fbegin', (playerArr: any[]) => {
 
+                this.gameOn = true;
                 this.fbegin();   
 
                 if(Array.isArray(playerArr)){    
@@ -123,10 +125,7 @@ export class BattlePage {
                         this.players[index].name = element.name;
                         ++index;
                     });
-                }                
-                
-                this.gameOn = true; 
-                            
+                }                              
             }); 
 
         this._hubConnection
@@ -167,6 +166,7 @@ export class BattlePage {
             this.flist();
         }
         else{
+            this.messages.push(this.key);
             this._hubConnection
                 .invoke('Join', this.key, this.mode, this.player.name)
                 .catch(err => console.error(err));
@@ -192,15 +192,13 @@ export class BattlePage {
         
         this.player = new Player();
         this.player.name = this.playerChar.join('');
-        this.players.push(this.player);
+        //this.players.push(this.player);
 
         if(this.isHost === true){
-            this.fhost(this.player.name);
-            this.play = 0;
+            this.fhost(this.player.name);            
         }
         else{
-            this.fjoin(this.player.name);
-            this.play = 1;
+            this.fjoin(this.player.name);            
         }
 
         this.hasJoined = true;
@@ -237,32 +235,45 @@ export class BattlePage {
         return { first: first, second: second};
     }
 
+    // return unique values from array
+    funique(array: any) {
+        var a = array.concat();
+        for(var i=0; i<a.length; ++i) {
+            for(var j=i+1; j<a.length; ++j) {
+                if(a[i] === a[j])
+                    a.splice(j--, 1);
+            }
+        }
+    
+        return a;
+      }  
+
     // Begin game
     fbegin(){
 
-        this.player = new Player();
-        this.enemy = new Player();
-
-        this.players.push(this.player);
-        this.players.push(this.enemy);
+        this.player = new Player(); 
 
         // Shuffle cards
         let first = this.alphabet;
         first = first.sort(() => .5 - Math.random());
 
         // Split cards for 2 players
+        this.players.push(new Player());
         this.players[0].deck = first.slice(0,13);
-        this.players[1].deck = first.slice(13,26);    
+        this.players.push(new Player());
+        this.players[1].deck = first.slice(13,26);   
+        
+        let second = this.alphabet;
+        second = second.sort(() => .5 - Math.random());
 
-        // Start with Player 1
-        if(this.isHost){
-            this.player = this.players[0];            
-            this.enemy = this.players[1];
-        }
-        else{
-            this.player = this.players[1];
-            this.enemy = this.players[0];
-        }       
+        // Split cards for 2 players
+        this.players.push(new Player());
+        this.players[2].deck = second.slice(0,13);
+        this.players.push(new Player());
+        this.players[3].deck = second.slice(13,26);
+
+        // Start with Player 1               
+        this.player = this.players[this.play];
 
         // Play if it's your turn, wait otherwise
         if(this.pass % this.mode === this.play){
@@ -381,7 +392,7 @@ export class BattlePage {
             .catch(err => console.error(err));
 
             let alert = this.alertCtrl.create({
-                title: (this.players[0].score > this.players[1].score ? this.players[0].name : this.players[1].name) + " Won :)",
+                title: "Game Over :)",
                 subTitle: 'Winner, Winner. Chicken Dinner!',
                 buttons: ['OK']
             });
@@ -396,21 +407,23 @@ export class BattlePage {
         this.isValid = false;
         this.isPlaced = false;
 
-        // Combined boards of other players
-
         this.player = this.players[index];
 
-        ++index;
-        index = index % this.mode;
-        this.enemy = this.players[index];
+        // Combined boards of other players
+        let count = 0;
+        let array = [];
+        while(count < this.mode){
+            if(count != index){
+            array = array.concat(this.players[count].board);        
+            }
+            ++count;
+        }
 
-        this.player.borrow = this.enemy.board;
+        let first = this.funique(array); 
+        let second = this.player.deck.concat(this.player.board);
 
-        // let alert = this.alertCtrl.create({
-        //     title: this.player.name,
-        //     buttons: ['OK']
-        // });
-        // alert.present();
+        this.player.borrow = first.filter(function(x) { return second.indexOf(x) < 0 })                
+
         }
     }
 

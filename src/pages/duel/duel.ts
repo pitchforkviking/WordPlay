@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Http } from '@angular/http';
 import { NavController } from 'ionic-angular';
-import { ModalController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 
@@ -41,8 +40,7 @@ export class DuelPage {
 
   constructor(
     public navCtrl: NavController,
-    public alertCtrl: AlertController,
-    public modalCtrl: ModalController,
+    public alertCtrl: AlertController,    
     public http: Http) {
 
     // Load dictionary
@@ -59,12 +57,12 @@ export class DuelPage {
   // Getting names from players
   fpush(letter:any){
     if(this.readyPlayerOne === true){
-      if(this.playerOne.length < 4){
+      if(this.playerOne.length < 5){
         this.playerOne.push(letter);
       }
     }
     else{
-        if(this.playerTwo.length < 4){
+        if(this.playerTwo.length < 5){
           this.playerTwo.push(letter);
         }
     }

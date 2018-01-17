@@ -1,17 +1,20 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 
-import { PassPage } from './pass';
+import { ArenaPage } from './arena';
 
 @NgModule({
   declarations: [
-    PassPage,
+    ArenaPage
   ],
+
   imports: [
-    IonicPageModule.forChild(PassPage)
+    IonicPageModule.forChild(ArenaPage)
   ],
+
   exports: [
-    PassPage
+    ArenaPage
   ]
 })
-export class PassPageModule { }
+
+export class ArenaPageModule { }

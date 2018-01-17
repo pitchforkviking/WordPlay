@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Http } from '@angular/http';
 import { NavController } from 'ionic-angular';
-import { ModalController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 
@@ -47,8 +46,7 @@ export class PartyPage {
 
   constructor(
     public navCtrl: NavController,
-    public alertCtrl: AlertController,
-    public modalCtrl: ModalController,
+    public alertCtrl: AlertController,    
     public http: Http) {
 
     // Load dictionary
@@ -66,22 +64,22 @@ export class PartyPage {
   // Getting names from players
   fpush(letter:any){
     if(this.readyPlayerOne === true){
-      if(this.playerOne.length < 4){
+      if(this.playerOne.length < 5){
         this.playerOne.push(letter);
       }
     }
     else if(this.readyPlayerTwo === true){
-        if(this.playerTwo.length < 4){
+        if(this.playerTwo.length < 5){
           this.playerTwo.push(letter);
         }
     }
     else if(this.readyPlayerThree === true){
-        if(this.playerThree.length < 4){
+        if(this.playerThree.length < 5){
           this.playerThree.push(letter);
         }
     }
     else{
-      if(this.playerFour.length < 4){
+      if(this.playerFour.length < 5){
         this.playerFour.push(letter);
       }
     }
@@ -165,7 +163,7 @@ export class PartyPage {
     second = new Array(count);
 
     if (length > count){
-        throw new RangeError("getRandom: more elements taken than available");
+        throw new RangeError("Something Went Wrong!");
     }
 
     while (length--) {
@@ -186,30 +184,7 @@ export class PartyPage {
     }
 
     return a;
-  }
-
-  fdiff (first: any, second: any) {
-
-    var a = [], diff = [];
-
-    for (let i = 0; i < first.length; i++) {
-        a[first[i]] = true;
-    }
-
-    for (let i = 0; i < second.length; i++) {
-        if (a[second[i]]) {
-            delete a[second[i]];
-        } else {
-            a[second[i]] = true;
-        }
-    }
-
-    for (var k in a) {
-        diff.push(k);
-    }
-
-    return diff;
-  }
+  }  
 
   // Begin game
   fbegin(){

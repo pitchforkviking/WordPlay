@@ -5,15 +5,12 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { WordPlay } from './app.component';
 
-//To be removed soon
-import { GamePage } from '../pages/game/game';
-
 import { HomePage } from '../pages/home/home';
-
 import { DuelPage } from '../pages/duel/duel';
 import { BattlePage } from '../pages/battle/battle';
 import { PartyPage } from '../pages/party/party';
 import { SurvivePage } from '../pages/survive/survive';
+import { ArenaPage } from '../pages/arena/arena';
 
 // import { PassPage } from '../pages/pass/pass';
 
@@ -21,16 +18,13 @@ import { SurvivePage } from '../pages/survive/survive';
 @NgModule({
   declarations: [
     WordPlay,
-    HomePage,
 
+    HomePage,
     DuelPage,
     BattlePage,
     PartyPage,
     SurvivePage,
-
-    // PassPage,
-    //remove
-    GamePage
+    ArenaPage
   ],
   imports: [
     BrowserModule,
@@ -40,16 +34,13 @@ import { SurvivePage } from '../pages/survive/survive';
   bootstrap: [IonicApp],
   entryComponents: [
     WordPlay,
+    
     HomePage,
-
     DuelPage,
     BattlePage,
     PartyPage,
     SurvivePage,
-
-    // PassPage,
-    //remove
-    GamePage
+    ArenaPage
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler}
