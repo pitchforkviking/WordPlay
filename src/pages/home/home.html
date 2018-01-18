@@ -1,60 +1,69 @@
-<!--
-<ion-header>
-		<ion-navbar>
-				<ion-title>
-						Ionic Blank
-				</ion-title>
-		</ion-navbar>
-</ion-header>
--->
-
 <ion-content padding>
+	<div *ngIf="playAlone === true">
 		<p>
-				<button (click)="fsurvive()" ion-button color="danger" round full icon-start>
-						<ion-icon name='flame' is-active="false"></ion-icon>
-						Survive (Single Player)
-				</button>
+			<button (click)="fsurvive()" ion-button color="primary" round full icon-start>
+				<ion-icon name='flame' is-active="false"></ion-icon>
+				Play Alone
+			</button>
+		</p>
+
+		<p>
+			<button (click)="fplay()" ion-button color="danger" round full icon-start>
+				<ion-icon name='people' is-active="false"></ion-icon>
+				Play With Friends
+			</button>
+		</p>
+
+		<p>
+			<button ion-button color="secondary" round full icon-start>
+				<ion-icon name='medal' is-active="false"></ion-icon>
+				Achievements
+			</button>
 		</p>
 		<p>
-				<button (click)="fduel()" ion-button color="primary" round full icon-start>
-						<ion-icon name='play' is-active="false"></ion-icon>
-						Duel (2 Player Local)
-				</button>
+			<button ion-button color="light" round full icon-start>
+				<ion-icon name='trophy' is-active="false"></ion-icon>
+				Leaderboard
+			</button>
 		</p>
 		<p>
-				<button (click)="fbattle()" ion-button color="secondary" round full icon-start>
-						<ion-icon name='settings' is-active="false"></ion-icon>
-						Battle (2 Player Online)
-				</button>
+			<button ion-button color="dark" round full icon-start>
+				<ion-icon name='cafe' is-active="false"></ion-icon>
+				Coffee?
+			</button>
+		</p>
+	</div>
+	<div *ngIf="playAlone === false">
+		<p>
+			<button (click)="fduel()" ion-button color="primary" round full icon-start>
+				<ion-icon name='play' is-active="false"></ion-icon>
+				Duel (2 Player Local)
+			</button>
 		</p>
 		<p>
-				<button (click)="fparty()" ion-button color="dark" round full icon-start>
-						<ion-icon name='car' is-active="false"></ion-icon>
-						Party (4 Player Local)
-				</button>
+			<button (click)="fbattle()" ion-button color="danger" round full icon-start>
+				<ion-icon name='settings' is-active="false"></ion-icon>
+				Battle (2 Player Online)
+			</button>
 		</p>
 		<p>
-				<button (click)="farena()" ion-button color="light" round full icon-start>
-						<ion-icon name='bus' is-active="false"></ion-icon>
-						Arena (4 Player Online)
-				</button>
-		</p>  
+			<button (click)="fparty()" ion-button color="light" round full icon-start>
+				<ion-icon name='car' is-active="false"></ion-icon>
+				Party (4 Player Local)
+			</button>
+		</p>
 		<p>
-				<button ion-button color="primary" round full icon-start>
-						<ion-icon name='medal' is-active="false"></ion-icon>
-						Achievements
-				</button>
-		</p>  
+			<button (click)="farena()" ion-button color="dark" round full icon-start>
+				<ion-icon name='bus' is-active="false"></ion-icon>
+				Arena (4 Player Online)
+			</button>
+		</p>
 		<p>
-				<button ion-button color="secondary" round full icon-start>
-						<ion-icon name='trophy' is-active="false"></ion-icon>
-						Leaderboard
-				</button>
-		</p> 
-		<p>
-				<button ion-button color="yellow" round full icon-start>
-						<ion-icon name='cafe' is-active="false"></ion-icon>
-						Coffee?
-				</button>
-		</p> 
+			<button (click)="fhome()" ion-button color="secondary" round full icon-start>
+				<ion-icon name='home' is-active="false"></ion-icon>
+				Home
+			</button>
+		</p>
+	</div>
+
 </ion-content>

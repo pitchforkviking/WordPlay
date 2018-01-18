@@ -12,11 +12,13 @@ import { ArenaPage } from '../arena/arena';
 })
 export class HomePage {
 
+  public playAlone: boolean = true;
+
   constructor(public navCtrl: NavController) {
 
   }
 
-  fsurvive(){
+  fsurvive() {
     this.navCtrl.push(SurvivePage)
   }
 
@@ -24,16 +26,24 @@ export class HomePage {
     this.navCtrl.push(DuelPage)
   }
 
-  fbattle(){
+  fbattle() {
     this.navCtrl.push(BattlePage)
   }
 
-  fparty(){
+  fparty() {
     this.navCtrl.push(PartyPage)
   }
 
   farena() {
     this.navCtrl.push(ArenaPage)
+  }
+
+  fplay() {
+    this.playAlone = false;
+  }
+
+  fhome() {
+    this.playAlone = true;
   }
 
 }

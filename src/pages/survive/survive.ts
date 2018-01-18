@@ -15,6 +15,9 @@ export class SurvivePage {
   public subscriber: any;
   public count: number = 30;
 
+  public gameOn: boolean = false;
+  public gameOver: boolean = false;
+
   public dictionary: string;
 
   public turn: number = 2;
@@ -44,6 +47,8 @@ export class SurvivePage {
 
       this.deck = this.fshuffle(this.deck);
 
+      this.gameOn = true;
+
       this.ftimer();
 
   }
@@ -69,19 +74,8 @@ export class SurvivePage {
     this.subscriber = this.timer.subscribe(t=> {
       --this.count;
       if(this.count === 0){
-        let confirm = this.alertCtrl.create({
-          title: 'You Scored ' + this.score + ' Points :)',
-          //subTitle: 'Borrowing is legal, try it!',
-          buttons: [
-            {
-              text: 'OK',
-              handler: () => {
-                this.navCtrl.push(HomePage)
-              }
-            }
-          ]
-        });
-        confirm.present();
+        this.gameOn = false;
+        this.gameOver = true;
       }
     });
   }
@@ -125,6 +119,11 @@ export class SurvivePage {
   }
 
   fquit(){
+    this.gameOn = false;
+    this.gameOver = true;
+  }
+
+  fhome(){
     this.subscriber.unsubscribe();
     this.navCtrl.push(HomePage);
   }

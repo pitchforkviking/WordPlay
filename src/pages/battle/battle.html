@@ -1,40 +1,43 @@
 <ion-content padding>
 
   <div *ngIf="gameOn === false && isLobby === true">
-      <button (click)="fhost()" ion-button color="primary" round full icon-start>
-        <ion-icon name='people' is-active="false"></ion-icon>
-        Host
-      </button>
-      <button (click)="fjoin()" ion-button color="secondary" round full icon-start>
-        <ion-icon name='people' is-active="false"></ion-icon>
-        Join
-      </button>
+    <button (click)="fhost()" ion-button color="primary" round full icon-start>
+      <ion-icon name='people' is-active="false"></ion-icon>
+      Host
+    </button>
+    <button (click)="fjoin()" ion-button color="secondary" round full icon-start>
+      <ion-icon name='people' is-active="false"></ion-icon>
+      Join
+    </button>
   </div>
 
-  <div *ngIf="gameOn === false && isLobby === false">    
+  <div *ngIf="gameOn === false && isLobby === false">
 
     <ion-card *ngIf="isWaiting === true">
       <ion-card-content>
         <button *ngFor="let message of messages" ion-button color="dark" round full icon-start outline>{{ message }}</button>
       </ion-card-content>
-    </ion-card> 
+    </ion-card>
 
     <button *ngIf="readyPlayer === false" ion-button color="light" round full icon-start>
       <ion-icon name='people' is-active="false"></ion-icon>
       Player
-    </button>   
-    
-    <ion-card *ngIf="readyPlayer === false && isHost === false && games.length > 0">        
-      <ion-card-content>        
-        <button *ngFor="let game of games" (click)="fgame(game)"  [ngClass]="{'btnActive': game === key }" ion-button color="secondary" outline>{{ game }}</button>
+    </button>
+
+    <ion-card *ngIf="readyPlayer === false && isHost === false && games.length > 0">
+      <ion-card-content>
+        <button *ngFor="let game of games" (click)="fgame(game)" [ngClass]="{'btnActive': game === key }" ion-button color="secondary"
+          outline>{{ game }}</button>
+          <ion-note padding-top margin-top float-right text-right>HOST</ion-note>
       </ion-card-content>
-    </ion-card> 
+    </ion-card>
 
     <ion-card *ngIf="readyPlayer === false && playerChar.length > 0">
       <ion-card-content>
         <button class="btnCard" *ngFor="let letter of playerChar" (click)="fflush(letter)" ion-button color="secondary" outline>{{ letter }}</button>
+        <ion-note padding-top margin-top float-right text-right>NAME</ion-note>
       </ion-card-content>
-    </ion-card>      
+    </ion-card>
 
     <ion-card *ngIf="readyPlayer === false">
       <ion-card-content>
@@ -42,14 +45,15 @@
       </ion-card-content>
     </ion-card>
 
-    <button *ngIf="readyPlayer === false && playerChar.length > 0" (click)="freadyplayer()" ion-button color="secondary" round full icon-start>
+    <button *ngIf="readyPlayer === false && playerChar.length > 0 && key != undefined" (click)="freadyplayer()" ion-button color="secondary" round
+      full icon-start>
       <ion-icon name='person-add' is-active="false"></ion-icon>
       Ready >
     </button>
-    
-  </div>  
 
-  <div *ngIf="gameOn === true && isWaiting === false">
+  </div>
+
+  <div *ngIf="gameOn === true && isWaiting === false && gameOver == false">
 
     <button ion-button color="light" round full icon-start>
       <ion-icon name='school' is-active="false"></ion-icon>
@@ -70,10 +74,10 @@
     </span>
 
     <span float-right style="width:40%;">
-        <ion-item no-lines>        
-          <ion-badge class="badgeSquare" color="light" item-end>{{enemy.name}}</ion-badge>
-          <ion-badge class="badgeCircle" color="dark" item-end>{{enemy.score}}</ion-badge>
-        </ion-item>
+      <ion-item no-lines>
+        <ion-badge class="badgeSquare" color="light" item-end>{{enemy.name}}</ion-badge>
+        <ion-badge class="badgeCircle" color="dark" item-end>{{enemy.score}}</ion-badge>
+      </ion-item>
     </span>
 
     <ion-card *ngIf="player.borrow.length > 0">
@@ -114,21 +118,38 @@
       <ion-icon name='switch' is-active="false"></ion-icon>
       Pass
     </button>
-           
-    <button *ngFor="let reply of replies" (click)="fbroadcast(reply)" ion-button color="primary" outline>{{ reply }}</button>    
+
+    <button *ngFor="let reply of replies" (click)="fbroadcast(reply)" ion-button color="primary" outline>{{ reply }}</button>
 
   </div>
 
-  <div *ngIf="gameOn === true && isWaiting === true">    
+  <div *ngIf="gameOn === true && isWaiting === true && gameOver == false">
     <ion-card-content>
       <button ion-button color="dark" round full icon-start outline>
-          Waiting<ion-spinner name="dots"></ion-spinner>
+        Waiting
+        <ion-spinner name="dots"></ion-spinner>
       </button>
-      <ion-card-content>        
+      <ion-card-content>
         <button *ngFor="let reply of replies" (click)="fbroadcast(reply)" ion-button color="primary" outline>{{ reply }}</button>
       </ion-card-content>
     </ion-card-content>
   </div>
 
+  <div *ngIf="gameOver === true">
+
+    <ion-card>
+      <ion-card-content>
+        <ion-item no-lines>
+          {{winner}} WON :)
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <button (click)="fhome()" ion-button color="secondary" round full icon-start>
+      <ion-icon name='home' is-active="false"></ion-icon>
+      Home
+    </button>
+
+  </div>
+
 </ion-content>
-      

@@ -4,6 +4,8 @@ import { NavController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 
+import { HomePage } from '../home/home';
+
 import {Player} from '../../models/player';
 
 @Component({
@@ -20,6 +22,7 @@ export class PartyPage {
   public readyPlayerFour: boolean = false;
 
   public gameOn: boolean = false;
+  public gameOver: boolean = false;
 
   public playerOne: any[] = [];
   public playerTwo: any[] = [];
@@ -40,6 +43,9 @@ export class PartyPage {
 
   public isValid: boolean = false;
   public isPlaced: boolean = false;
+  public isWaiting: boolean = false;
+
+  public winner: string;
 
   public allWords: any[] = [];
   public lastWords: any[] = [];
@@ -280,15 +286,22 @@ export class PartyPage {
     }
 
     if(this.turn === 10){
-      let alert = this.alertCtrl.create({
-        title: "Game Over :)",
-        buttons: ['OK']
-      });
-      alert.present();
+      this.gameOver = true;
+      this.winner = this.players[0].score > this.players[1].score ? 
+                    (this.players[0].score > this.players[2].score ? 
+                      (this.players[0].score > this.players[3].score ? this.players[0].name : this.players[3].name)
+                      :(this.players[2].score > this.players[3].score ? this.players[2].name : this.players[3].name))
+                    :(this.players[1].score > this.players[2].score ? 
+                      (this.players[1].score > this.players[3].score ? this.players[1].name : this.players[3].name)
+                      :(this.players[2].score > this.players[3].score ? this.players[2].name : this.players[3].name));
+                    
+      
       this.subscriber.unsubscribe();
 
     }
     else{
+
+      this.isWaiting = true;
 
       this.isValid = false;
       this.isPlaced = false;
@@ -309,14 +322,17 @@ export class PartyPage {
 
       let second = this.player.deck.concat(this.player.board);
 
-      this.player.borrow = first.filter(function(x) { return second.indexOf(x) < 0 })
-
-      let alert = this.alertCtrl.create({
-        title: this.player.name,
-        buttons: ['OK']
-      });
-      alert.present();
+      this.player.borrow = first.filter(function(x) { return second.indexOf(x) < 0 })      
     }
+  }
+
+  fhome() {
+    this.navCtrl.push(HomePage);
+  }
+
+  fwait(){
+    this.count = 20;
+    this.isWaiting = false;
   }
 
 }

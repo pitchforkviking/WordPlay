@@ -46,19 +46,23 @@
       </ion-card-content>
     </ion-card>
 
-    <button *ngIf="readyPlayerOne === true && playerOne.length > 0" (click)="freadyplayerone()" ion-button color="secondary" round full icon-start>
+    <button *ngIf="readyPlayerOne === true && playerOne.length > 0" (click)="freadyplayerone()" ion-button color="secondary"
+      round full icon-start>
       <ion-icon name='person-add' is-active="false"></ion-icon>
       Ready Player One
     </button>
-    <button *ngIf="readyPlayerTwo === true && playerTwo.length > 0" (click)="freadyplayertwo()" ion-button color="danger" round full icon-start>
+    <button *ngIf="readyPlayerTwo === true && playerTwo.length > 0" (click)="freadyplayertwo()" ion-button color="danger" round
+      full icon-start>
       <ion-icon name='person' is-active="false"></ion-icon>
       Ready Player Two
     </button>
-    <button *ngIf="readyPlayerThree === true && playerThree.length > 0" (click)="freadyplayerthree()" ion-button color="secondary" round full icon-start>
+    <button *ngIf="readyPlayerThree === true && playerThree.length > 0" (click)="freadyplayerthree()" ion-button color="secondary"
+      round full icon-start>
       <ion-icon name='person-add' is-active="false"></ion-icon>
       Ready Player Three
     </button>
-    <button *ngIf="readyPlayerFour === true && playerFour.length > 0" (click)="freadyplayerfour()" ion-button color="danger" round full icon-start>
+    <button *ngIf="readyPlayerFour === true && playerFour.length > 0" (click)="freadyplayerfour()" ion-button color="danger"
+      round full icon-start>
       <ion-icon name='person' is-active="false"></ion-icon>
       Ready Player Four
     </button>
@@ -66,7 +70,7 @@
 
   </div>
 
-  <div *ngIf="gameOn === true">
+  <div *ngIf="gameOn === true && gameOver === false && isWaiting === false">
 
     <button ion-button color="light" round full icon-start>
       <ion-icon name='school' is-active="false"></ion-icon>
@@ -131,4 +135,39 @@
       Pass
     </button>
   </div>
+
+  <div *ngIf="isWaiting === true">
+
+    <ion-card>
+      <ion-card-content>
+        <ion-item no-lines>
+          PASS IT TO {{player.name}}
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <button (click)="fwait()" ion-button color="secondary" round full icon-start>
+      <ion-icon name='switch' is-active="false"></ion-icon>
+      OK
+    </button>
+
+  </div>
+
+  <div *ngIf="gameOver === true">
+
+    <ion-card>
+      <ion-card-content>
+        <ion-item no-lines>
+          {{winner}} WON :)
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <button (click)="fhome()" ion-button color="secondary" round full icon-start>
+      <ion-icon name='home' is-active="false"></ion-icon>
+      Home
+    </button>
+
+  </div>
+
 </ion-content>
